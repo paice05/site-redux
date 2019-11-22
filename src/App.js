@@ -1,24 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+
+import { useSelector, useDispatch } from "react-redux";
+
+import { actionsTodo } from "./store/ducks/todo";
 
 function App() {
+  const dispatch = useDispatch();
+
+  const [name, setName] = useState("");
+
+  const todos = useSelector(state => state.todos.todos);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input type="text" onChange={e => setName(e.target.value)} />
+      <button onClick={() => dispatch(actionsTodo.addTodo(name))}>Add</button>
+      {todos.map(({ id, name, toggle }) => (
+        <li key={id} style={{ display: "flex" }}>
+          <p
+            style={{
+              textDecoration: toggle ? "line-through" : "",
+              fontSize: "25px",
+              margin: "0 15px"
+            }}
+            onClick={() => dispatch(actionsTodo.toogleTodo(id))}
+          >
+            {name}
+          </p>
+          <button onClick={() => dispatch(actionsTodo.removeTodo(id))}>
+            remove
+          </button>
+        </li>
+      ))}
     </div>
   );
 }
